@@ -2,6 +2,9 @@ package com.avdeyy.SocialMediaApi.entity;
 
 
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -23,15 +26,15 @@ public class User {
     @Column(name = "email")
     private String email;
 
-  @ManyToMany
-  @JoinTable(name = "follower_following",
-          joinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id"),
-          inverseJoinColumns = @JoinColumn(name = "following_id", referencedColumnName = "id")
-  )
-  private List<User> followers;
+    @ManyToMany
+    @JoinTable(name = "follower_following",
+            joinColumns = @JoinColumn(name = "follower_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id", referencedColumnName = "id")
+    )
+    private List<User> followers;
 
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "followers")
-  private List<User> following;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "followers")
+    private List<User> following;
 
     @ManyToMany
     @JoinTable(
@@ -40,5 +43,5 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Collection<Role> roles;
-
 }
+
