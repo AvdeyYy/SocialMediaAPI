@@ -16,15 +16,15 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping("/post/{id}/remove")
-    public ResponseEntity<?> removePost(@PathVariable Long id){
-        return postService.deletePost(id);
+    public ResponseEntity<?> removePost(@PathVariable Long id,Principal principal){
+        return postService.deletePost(id, principal);
     }
     @PostMapping("/post/add")
-    public ResponseEntity<?> addPost(@RequestBody Post post, User user){
-        return postService.addPostToUser(post,user);
+    public ResponseEntity<?> addPost(Principal principal,@RequestBody Post post){
+        return postService.addPostToUser(principal,post);
     }
     @PostMapping("/post/{id}/update")
-    public ResponseEntity<?> updatePost(@PathVariable Long id) {
-        return postService.updatePost(id);
+    public ResponseEntity<?> updatePost(Principal principal,@PathVariable Long id) {
+        return postService.updatePost(principal,id);
     }
 }

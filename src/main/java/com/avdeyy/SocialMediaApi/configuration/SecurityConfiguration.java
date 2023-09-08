@@ -53,10 +53,7 @@ public class SecurityConfiguration {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
-                .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(userService)
-                .passwordEncoder(passwordEncoder());
+                .and().addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

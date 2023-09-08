@@ -21,31 +21,31 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final UserService userService;
 
-//    public ResponseEntity<?> addPostToUser(@RequestBody Post post) {
-//        post.setHeader(post.getHeader());
-//        post.setText(post.getText());
-//        postRepository.save(post);
-//        return  ResponseEntity.ok(HttpStatus.OK);
-//    }
-    public ResponseEntity<?> addPostToUser(@RequestBody Post post,@AuthenticationPrincipal User user) {
-        post.setHeader(post.getHeader());
-        post.setText(post.getText());
-        post.setUser(user);
-        postRepository.save(post);
-        return  ResponseEntity.ok("success");
+    public ResponseEntity<?> addPostToUser(Principal principal,@RequestBody Post post) {
+        return userService.findByPrincipal(principal, currentUser -> {
+            post.setUser(currentUser);
+            post.setHeader(post.getHeader());
+            post.setText(post.getText());
+            postRepository.save(post);
+            return ResponseEntity.ok(HttpStatus.CREATED);
+        });
     }
-    public ResponseEntity<?> deletePost(@PathVariable Long id) {
-        postRepository.deleteById(id);
+    public ResponseEntity<?> deletePost(@PathVariable Long id,Principal principal) {
+       return userService.findByPrincipal(principal, currentUser -> {
+            postRepository.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
+        });
     }
 
-    public ResponseEntity<?> updatePost(@PathVariable Long id) { // С айдишником все нормально, разобраться почему не заменяет данные в базе
-        Post post = postRepository.findById(id).orElseThrow();
-        post.setHeader(post.getHeader());
-        post.setText(post.getText());
-        postRepository.save(post);
+    public ResponseEntity<?> updatePost(Principal principal, @PathVariable Long id) {
+        return userService.findByPrincipal(principal, currentUser -> {
+            Post post = postRepository.findById(id).orElseThrow();
+            post.setHeader(post.getHeader());
+            post.setText(post.getText());
+            postRepository.save(post);
         return ResponseEntity.ok(HttpStatus.OK);
+    });
     }
 }

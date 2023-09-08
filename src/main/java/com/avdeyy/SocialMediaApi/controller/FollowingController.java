@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.security.Principal;
+
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -20,16 +22,16 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class FollowingController {
     private final FollowingService followingService;
 
-    @PostMapping("/subscribe/{currentUser}/{user}")
-    public ResponseEntity<?> subscribe(@PathVariable User currentUser , @PathVariable User user) {
-        followingService.subscribe(currentUser, user);
-        return  ResponseEntity.ok(HttpStatus.CREATED);
+    @PostMapping("/subscribe/{user}")
+    public ResponseEntity<?> subscribe(Principal principal, @PathVariable User user) {
+        followingService.subscribe(principal, user);
+        return  ResponseEntity.ok(HttpStatus.OK);
         // с 2 юзерами работает, но только в 1 сторону, надо это поменять и понять как работать с principal, и как работать с 2RequestBody
     }
 
-    @PostMapping("/unsubscribe/{currentUser}/{user}")
-    public ResponseEntity<?> unsubscribe(@PathVariable User currentUser, @PathVariable User user){
-        followingService.unsubscribe(currentUser,user);
+    @PostMapping("/unsubscribe/{user}")
+    public ResponseEntity<?> unsubscribe(Principal principal, @PathVariable User user){
+        followingService.unsubscribe(principal,user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
