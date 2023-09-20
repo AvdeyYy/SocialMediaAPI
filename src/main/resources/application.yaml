@@ -10,6 +10,8 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
   datasource:
     platform: root
     url: jdbc:postgresql://localhost:5432/socialmedia
