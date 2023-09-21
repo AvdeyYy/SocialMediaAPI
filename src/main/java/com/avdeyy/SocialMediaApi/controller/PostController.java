@@ -11,7 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 
 import java.math.BigInteger;
 import java.security.Principal;
@@ -39,10 +41,11 @@ public class PostController {
         return postService.updatePost(principal,id);
     }
 
-    @PostMapping("/getPosts")
-    public ResponseEntity<?> getPost(@RequestBody Long id) {
-        postService.getPostFromUser(id);
+    @PostMapping("/getPosts/{userId}")
+    public ResponseEntity<?> getPost(@PathVariable Long userId) {
+        postService.getPostFromUser(userId);
          return ResponseEntity.ok(HttpStatus.OK);
+        }
+
     }
 
-}

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.math.BigInteger;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -28,7 +29,7 @@ public class PostService {
     private final UserService userService;
 
 
-    public ResponseEntity<?> addPostToUser(Principal principal,@RequestBody Post post) {
+    public ResponseEntity<?> addPostToUser(Principal principal, Post post) {
         return userService.findByPrincipal(principal, currentUser -> {
             post.setUser(currentUser);
             post.setHeader(post.getHeader());
@@ -37,14 +38,14 @@ public class PostService {
             return ResponseEntity.ok(HttpStatus.CREATED);
         });
     }
-    public ResponseEntity<?> deletePost(@PathVariable Long id,Principal principal) {
+    public ResponseEntity<?> deletePost(Long id,Principal principal) {
        return userService.findByPrincipal(principal, currentUser -> {
             postRepository.deleteById(id);
         return ResponseEntity.ok(HttpStatus.OK);
         });
     }
 
-    public ResponseEntity<?> updatePost(Principal principal, @PathVariable Long id) {
+    public ResponseEntity<?> updatePost(Principal principal, Long id) {
         return userService.findByPrincipal(principal, currentUser -> {
             Post post = postRepository.findById(id).orElseThrow();
             post.setHeader(post.getHeader());
@@ -54,9 +55,11 @@ public class PostService {
     });
     }
 
-    public ResponseEntity<?> getPostFromUser(Long id) {
-        System.out.println(postRepository.findPostsByUser(id));
+    public ResponseEntity<?> getPostFromUser(Long userId) {
+        System.out.println(postRepository.findPostsByUser(userId));
         return ResponseEntity.ok(HttpStatus.OK);
     }
+
+
 
 }
