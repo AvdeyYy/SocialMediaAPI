@@ -8,7 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.security.Principal;
@@ -25,13 +28,12 @@ public class FollowingController {
     @PostMapping("/subscribe/{user}")
     public ResponseEntity<?> subscribe(Principal principal, @PathVariable User user) {
         followingService.subscribe(principal, user);
-        return  ResponseEntity.ok(HttpStatus.OK);
-        // с 2 юзерами работает, но только в 1 сторону, надо это поменять и понять как работать с principal, и как работать с 2RequestBody
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @PostMapping("/unsubscribe/{user}")
-    public ResponseEntity<?> unsubscribe(Principal principal, @PathVariable User user){
-        followingService.unsubscribe(principal,user);
+    public ResponseEntity<?> unsubscribe(Principal principal, @PathVariable User user) {
+        followingService.unsubscribe(principal, user);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }

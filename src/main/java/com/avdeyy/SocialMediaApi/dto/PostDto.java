@@ -1,8 +1,6 @@
 package com.avdeyy.SocialMediaApi.dto;
-import com.avdeyy.SocialMediaApi.entity.User;
-import lombok.Data;
 
-import java.awt.*;
+import lombok.Data;
 
 @Data
 public class PostDto {

@@ -21,18 +21,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
-public class    UserService implements UserDetailsService {
+public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-    }
-
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -68,8 +63,21 @@ public class    UserService implements UserDetailsService {
                 .flatMap(this::findByUsername);
 
         return currentUser.isPresent() ?
-                found.apply(currentUser.get()):
-        ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+                found.apply(currentUser.get()) :
+                ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
+    public Long findByPrincipalLong(Principal principal, Function<User, Long> found) {
+        Optional<User> currentUser = Optional.ofNullable(principal)
+                .map(Principal::getName)
+                .flatMap(this::findByUsername);
+
+        return found.apply(currentUser.get());
+    }
+
+
+    public Long getFollowing(Principal principal) {
+        return findByPrincipalLong(principal, currentUser ->
+                Long.valueOf(userRepository.findByPostsFromFollowing(currentUser.getId())));
+    }
 }

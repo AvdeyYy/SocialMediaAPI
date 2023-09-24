@@ -22,7 +22,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @EnableWebSecurity
 @EnableWebMvc
-//@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration {
     private UserService userService;
     private JwtFilter jwtFilter;
@@ -74,5 +73,6 @@ public class SecurityConfiguration {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 
 }

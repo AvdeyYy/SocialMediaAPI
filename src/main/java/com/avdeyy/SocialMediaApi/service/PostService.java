@@ -1,32 +1,26 @@
 package com.avdeyy.SocialMediaApi.service;
 
+import com.avdeyy.SocialMediaApi.dto.PostDto;
 import com.avdeyy.SocialMediaApi.entity.Post;
-import com.avdeyy.SocialMediaApi.entity.User;
 import com.avdeyy.SocialMediaApi.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.math.BigInteger;
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
 
 
 @Service
 public class PostService {
+    private final PostRepository postRepository;
+    private final UserService userService;
+
     @Autowired
     public PostService(PostRepository postRepository, UserService userService) {
         this.postRepository = postRepository;
         this.userService = userService;
     }
-
-    private final PostRepository postRepository;
-    private final UserService userService;
 
 
     public ResponseEntity<?> addPostToUser(Principal principal, Post post) {
@@ -38,28 +32,32 @@ public class PostService {
             return ResponseEntity.ok(HttpStatus.CREATED);
         });
     }
-    public ResponseEntity<?> deletePost(Long id,Principal principal) {
-       return userService.findByPrincipal(principal, currentUser -> {
+
+    public ResponseEntity<?> deletePost(Long id, Principal principal) {
+        return userService.findByPrincipal(principal, currentUser -> {
             postRepository.deleteById(id);
-        return ResponseEntity.ok(HttpStatus.OK);
+            return ResponseEntity.ok(HttpStatus.OK);
+        });
+
+    }
+
+    public ResponseEntity<?> updatePost(Principal principal, Long id, PostDto postDto) {
+        return userService.findByPrincipal(principal, currentUser -> {
+            Post post = postRepository.findById(id).orElseThrow();
+            post.setHeader(postDto.getHeader());
+            post.setText(postDto.getText());
+            postRepository.save(post);
+            return ResponseEntity.ok(HttpStatus.OK);
         });
     }
 
-    public ResponseEntity<?> updatePost(Principal principal, Long id) {
-        return userService.findByPrincipal(principal, currentUser -> {
-            Post post = postRepository.findById(id).orElseThrow();
-            post.setHeader(post.getHeader());
-            post.setText(post.getText());
-            postRepository.save(post);
-        return ResponseEntity.ok(HttpStatus.OK);
-    });
-    }
-
-    public ResponseEntity<?> getPostFromUser(Long userId) {
-        System.out.println(postRepository.findPostsByUser(userId));
+    public ResponseEntity<?> getPostByUser(Long userId) {
+        postRepository.findPostsByUser(userId);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
-
-
+    public ResponseEntity<?> getPostsByFollowing(Principal principal) {
+        postRepository.findPostsByUser(userService.getFollowing(principal));
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 }
